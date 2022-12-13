@@ -7,7 +7,7 @@ Enables pub/sub messaging between two robots in different networks over NATS. Th
 To use this package, add a single instance of the following node somewhere in your main launch-file and make sure to update the parameters according to your needs.
 
 ```xml
-<node name="nats_connector" pkg="$(find nats_ros_connector)" type="nats_connector.py" output="screen">
+<node name="nats_connector" pkg="nats_ros_connector" type="nats_connector.py" output="screen">
     <param name="host" value="nats://host.docker.internal:4222" />
     <rosparam>
         publishers:
@@ -16,7 +16,9 @@ To use this package, add a single instance of the following node somewhere in yo
             - topic: talker2
                 rate: 50
         subscribers:
-            - topic: listener
+            - topic: listener1
+                type: std_msgs/string
+            - topic: listener2
                 type: std_msgs/string
     </rosparam>
 </node>
