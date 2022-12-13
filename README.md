@@ -12,14 +12,14 @@ To use this package, add a single instance of the following node somewhere in yo
     <rosparam>
         publishers:
             - topic: talker1
-                rate: 1
+              rate: 1
             - topic: talker2
-                rate: 50
+              rate: 50
         subscribers:
             - topic: listener1
-                type: std_msgs/string
+              type: std_msgs/string
             - topic: listener2
-                type: std_msgs/string
+              type: std_msgs/string
     </rosparam>
 </node>
 ```
@@ -38,6 +38,7 @@ To use this package, add a single instance of the following node somewhere in yo
 
     ```yaml
     topic # name of the ROS topic (use / for namespaces eg. foo/bar)
+    type # Type of the topic
     ```
 
     _`rate` is not needed for subscribers because the NATS connector forwards a message from NATS to ROS upon arrival._
