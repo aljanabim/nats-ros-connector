@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>nats_ros_connector</name>
+  <version>0.0.0</version>
+  <description>A package for connecting ROS to NATS</description>
+  <maintainer email="test@test.com">Mustafa Al-Janabi</maintainer>
+  <license>Apache-2.0</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <depend>rospy</depend>
+  <depend>message_runtime</depend>
+  <depend>message_generation</depend>
+
+  <export>
+  </export>
+</package>
