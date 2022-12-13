@@ -81,7 +81,7 @@ pip3 install nats-py==2.2.0
 
 -   [x] Support Publishers
 -   [x] Support Subscribers
--   [] Allow topic names that begin with forward-slash, ie. "/topic_name"
--   [] Support ROS Namespaces (via translation into NATS Subject token)
--   [] Support Services
--   [] Support Authenticated NATS Servers
+-   [ ] Allow topic names that begin with forward-slash, ie. "/topic_name"
+-   [ ] Support ROS Namespaces (via translation into NATS Subject token)
+-   [ ] Support Services
+-   [ ] Support Authenticated NATS Servers
