@@ -22,7 +22,7 @@ class NATSSubscriber:
     async def run(self):
         # await self.nc.subscribe(self.topic_name, cb=self.cb) # a callback-based implementation causes the event loop to close prematurely
         sub = await self.nc.subscribe(self.topic_name)
-        while True and not rospy.is_shutdown():
+        while not rospy.is_shutdown():
             try:
                 msg = await sub.next_msg()
                 data = self.parse_msg(msg)

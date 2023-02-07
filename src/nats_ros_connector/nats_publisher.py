@@ -21,7 +21,7 @@ class NATSPublisher:
         self.msg = msg
 
     async def run(self):
-        while True and not rospy.is_shutdown():
+        while not rospy.is_shutdown():
             if self.msg is not None:
                 buff = BytesIO()
                 self.msg.serialize(buff)
