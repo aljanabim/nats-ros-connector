@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<launch>
-    <node name="subber" pkg="nats_ros_connector" type="subber.py" output="screen">
-    </node>
-</launch>

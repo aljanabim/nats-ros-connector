@@ -1,18 +1,15 @@
 <?xml version="1.0"?>
 <launch>
+    <node name="example_clientA" pkg="nats_ros_connector" type="example_clientA.py" output="screen">
+    </node>
+
     <node name="nats_connector" pkg="nats_ros_connector" type="nats_connector.py" output="screen">
         <param name="host" value="nats://host.docker.internal:4222" />
         <rosparam>
             publishers:
-                - topic: talker1
-                  rate: 1
-                - topic: talker2
-                  rate: 50
+                - clientA_talker
             subscribers:
-                - topic: listener1
-                  type: std_msgs/string
-                - topic: listener2
-                  type: std_msgs/string
+                - clientA_listener
         </rosparam>
     </node>
 </launch>

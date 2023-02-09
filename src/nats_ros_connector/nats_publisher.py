@@ -1,31 +1,28 @@
 import rospy
 import asyncio
 from io import BytesIO
-from std_msgs.msg import Header
 
 
 class NATSPublisher:
-    def __init__(self, nats_connection, topic_name, rate=30):
+    def __init__(self, nats_connection, topic_name, event_loop):
         self.nc = nats_connection
-        self.topic_name = topic_name
-        self.rate = rate
+        self.topic_name = topic_name[1:] if topic_name.startswith("/") else topic_name
+        # in NATS "." is used to separate tokens whereas in we namespace with "/"
+        self.topic_name_nats = self.topic_name.replace("/", ".")
 
+        self.event_loop = event_loop
         self.msg = None
         # Use AnyMsg to get a serialized message to be forwarded to another client
         self.sub = rospy.Subscriber(self.topic_name, rospy.AnyMsg, self.ros_cb)
-        # TODO Make the ros_cb trigger a create_task instead of running an infinite loop
-        # To make sure that the rate is not needed.
-        # See https://answers.ros.org/question/362598/asyncawait-in-subscriber-callback/
 
     def ros_cb(self, msg):
         self.msg = msg
+        asyncio.run_coroutine_threadsafe(self.handle_msg(msg), self.event_loop).result()
+        # calling .result() ensure waiting until the handle_msg completes
+        # See https://answers.ros.org/question/362598/asyncawait-in-subscriber-callback/
+        # and https://docs.python.org/3/library/asyncio-task.html#scheduling-from-other-threads
 
-    async def run(self):
-        while not rospy.is_shutdown():
-            if self.msg is not None:
-                buff = BytesIO()
-                self.msg.serialize(buff)
-                await self.nc.publish(self.topic_name, buff.getvalue())
-                self.msg = None
-            else:  # sleep to keep event loop running
-                await asyncio.sleep(1 / self.rate)
+    async def handle_msg(self, msg):
+        buff = BytesIO()
+        msg.serialize(buff)
+        await self.nc.publish(self.topic_name_nats, buff.getvalue())
