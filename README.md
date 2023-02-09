@@ -34,8 +34,14 @@ Inside of the `<rosparam>` tags you provide the lists of `publishers` and `subsc
 
 The topic names may begin with or without a forward-slash `/`. Furthermore, the namespaces in ROS, created with `/` are translated to the NATS token separator `.`. For instance the topic name `/topicH/A/B`, in ROS, becomes `topicH.A.B` in NATS. This happens under the hood and you don't need to worry about it. To learn more about the naming system in ROS, read this [article](http://wiki.ros.org/Names). To learn more about the naming system in NATS, read this [article](https://docs.nats.io/nats-concepts/subjects) to under
 
-Other supported parameters include `name=None, pedantic=False, verbose=False, allow_reconnect=True, connect_timeout=2, reconnect_time_wait=2, max_reconnect_attempts=60, ping_interval=120, max_outstanding_pings=2, dont_randomize=False, flusher_queue_size=1024, no_echo=False, tls=None, tls_hostname=None, user=None, password=None, token=None, drain_timeout=30, signature_cb=None, user_jwt_cb=None, user_credentials=None, nkeys_seed=None`
+<details>
+<summary>Other supported parameters include</summary>
+
+`name=None, pedantic=False, verbose=False, allow_reconnect=True, connect_timeout=2, reconnect_time_wait=2, max_reconnect_attempts=60, ping_interval=120, max_outstanding_pings=2, dont_randomize=False, flusher_queue_size=1024, no_echo=False, tls=None, tls_hostname=None, user=None, password=None, token=None, drain_timeout=30, signature_cb=None, user_jwt_cb=None, user_credentials=None, nkeys_seed=None`
+
 These are used when creating the NATS Client connection. See the [nats.py documentation](https://nats-io.github.io/nats.py/modules.html#asyncio-client).
+
+</details>
 
 ## Installation
 
