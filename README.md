@@ -95,21 +95,22 @@ graph TB
 
 ### Running the examples
 
-Start by running a NATS Server and make sure it is accessible to both clients.
+1. Start by running a NATS Server and make sure it is accessible to both clients.
 
-Modify the url to your NATS Server inside the launch file corresponding to each client. For ClientA, edit [example_clientA.launch](./launch/example_clientA.launch) and for ClientB, edit [example_clientB.launch](./launch/example_clientB.launch)
+2. Modify the url to your NATS Server inside the launch file corresponding to each client. For ClientA, edit the `host` param in [example_clientA.launch](./launch/example_clientA.launch) and for ClientB, edit the `host` param in [example_clientB.launch](./launch/example_clientB.launch)
 
-On Machine A start ClientA by running
+3. On Machine A start ClientA by running
 
-```
-roslaunch nats_ros_connector example_clientA.launch
-```
+    ```
+    roslaunch nats_ros_connector example_clientA.launch
+    ```
 
-On Machine B start ClientB by running
+4. On Machine B start ClientB by running
+    ```
+    roslaunch nats_ros_connector example_clientB.launch
+    ```
 
-```
-roslaunch nats_ros_connector example_clientB.launch
-```
+### Example output
 
 On `ClientA` you should see output similar to the following, with new messages arriving at `1Hz`
 
