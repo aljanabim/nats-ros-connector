@@ -11,12 +11,10 @@ class NATSPublisher:
         self.topic_name_nats = self.topic_name.replace("/", ".")
 
         self.event_loop = event_loop
-        self.msg = None
         # Use AnyMsg to get a serialized message to be forwarded to another client
         self.sub = rospy.Subscriber(self.topic_name, rospy.AnyMsg, self.ros_cb)
 
     def ros_cb(self, msg):
-        self.msg = msg
         asyncio.run_coroutine_threadsafe(self.handle_msg(msg), self.event_loop).result()
         # calling .result() ensure waiting until the handle_msg completes
         # See https://answers.ros.org/question/362598/asyncawait-in-subscriber-callback/
