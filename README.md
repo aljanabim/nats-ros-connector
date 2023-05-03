@@ -20,19 +20,37 @@ To use this package, add a single instance of the following node somewhere in yo
             - /topicF
             - /topicG/A
             - /topicH/A/B
+        services:
+            - serviceA
+            - /serviceB
+            - /ServiceC/A
+            - /ServiceD/A/B
+        service_proxies:
+            - name: serviceE
+              type: [serviceE type] # eg. std_srvs/Trigger
+            - name: /serviceF
+              type: [serviceF type] # eg. std_srvs/Bool
+            - name: /serviceG/A
+              type: [serviceG/A type]
+            - name: /serviceH/A/B
+              type: [serviceH/A/B type]
     </rosparam>
 </node>
 ```
 
 -   In `host` you provide the address to your NATS server (in the example above, the NATS server is running locally, while ROS is running in a Docker container both on the same machine, so `host.docker.internal` is used to get the address of the localhost relative to the container.
 
-Inside of the `<rosparam>` tags you provide the lists of `publishers` and `subscribers` in the YAML format.
+Inside of the `<rosparam>` tags you provide the lists of `publishers`, `subscribers`, `services`, and `service_proxies` in the YAML format.
 
 -   In `publishers`, you provided a list of all the topics which you would like to publish from ROS to NATS.
 
 -   In `subscribers`, you provided a list of all the topics which you would like to subscribe to from NATS to ROS.
 
-The topic names may begin with or without a forward-slash `/`. Furthermore, the namespaces in ROS, created with `/` are translated to the NATS token separator `.`. For instance the topic name `/topicH/A/B`, in ROS, becomes `topicH.A.B` in NATS. This happens under the hood and you don't need to worry about it. To learn more about the naming system in ROS, read this [article](http://wiki.ros.org/Names). To learn more about the naming system in NATS, read this [article](https://docs.nats.io/nats-concepts/subjects) to under
+-   In `services`, you provide a list of all services are advertised in your ROS nodes and should in turn be advertised to other NATS clients
+
+-   In `service_proxies`, you provide a sequence of mappings each mapping containing the `name` and `type` of the service. This will make sure that NATS reaches out to a client advertising the service when you create a service proxy in your ROS nodes. Note that `wait_for_message` does not guarantee that the client advertising the services over NATS is guaranteed to exists. Therefore, you might encounter the error: _`NATS Service Proxy ERROR: REQUEST FOR [service_name] has no NATS responders available (No NATS Client is advertising this service yet)`_, which means that that a request was sent, but NATS found no launched client advertising the service. So far, we leave it up to the user to ensure that a service is up.
+
+    The topic names may begin with or without a forward-slash `/`. Furthermore, the namespaces in ROS, created with `/` are translated to the NATS token separator `.`. For instance the topic name `/topicH/A/B`, in ROS, becomes `topicH.A.B` in NATS. This happens under the hood and you don't need to worry about it. To learn more about the naming system in ROS, read this [article](http://wiki.ros.org/Names). To learn more about the naming system in NATS, read this [article](https://docs.nats.io/nats-concepts/subjects) to under
 
 <details>
 <summary>Other supported parameters include</summary>
@@ -77,8 +95,10 @@ pip3 install nats-py==2.2.0
 
 The NATS ROS Connector includes an example which demonstrates bi-directional messaging between two clients `ClientA` and `ClientB`. Each client is meant run on separate machine with distinct ROS Cores. With a NATS Server that's accessible to both clients, it's possible to bridge the networking gap between the clients and enable bi-directional communication. The example can scale to as many number of clients and topics as the network bandwidth and the NATS Server can handle. The messaging layout in the example is follows:
 
--   `ClientA` publishes a topic called `clientA_talker` of msg class `std_msgs/Header` and subscribers to a topic called `clientA_listener` of msg class `std_msgs/String`.
--   `ClientB` publishes a topic called `clientA_listener` of msg class `std_msgs/Header` and subscribers to a topic called `clientA_listener` of msg class `std_msgs/String`.
+-   `ClientA` publishes a topic called `clientA_talker` of msg type `std_msgs/Header` and subscribers to a topic called `clientA_listener` of msg type `std_msgs/String`.
+-   `ClientA` advertises a service called `trigger_clientA` and creates a service proxy to `trigger_clientB` both services of service type `std_srvs/Trigger`.
+-   `ClientB` publishes a topic called `clientA_listener` of msg type `std_msgs/Header` and subscribers to a topic called `clientA_listener` of msg type `std_msgs/String`.
+-   `ClientB` advertises a service called `trigger_clientB` and creates a service proxy to `trigger_clientA` both services of service type `std_srvs/Trigger`.
 
 ```mermaid
 graph TB
@@ -112,23 +132,41 @@ graph TB
     ```
 
 4. On Machine B start ClientB by running
-    ```
-    roslaunch nats_ros_connector example_clientB.launch
-    ```
+   `   roslaunch nats_ros_connector example_clientB.launch`
+
+Both clients sleep for `2` seconds before they start calling the service proxies, giving you time to launch both ends.
 
 ### Example output
 
 On `ClientA` you should see output similar to the following, with new messages arriving at `1Hz`
 
 ```
-from clientA_listener
- data: "1675983703684478759"
+SERVICE RESULT OF trigger_clientB
+ success: False
+message: "Client B just got triggered! :("
+
+SERVICE RESULT OF trigger_clientB
+ success: False
+message: "Client B just got triggered! :("
+
+SERVICE RESULT OF trigger_clientB
+ success: False
+message: "Client B just got triggered! :("
+
+SERVICE RESULT OF trigger_clientB
+ success: False
+message: "Client B just got triggered! :("
+
+SERVICE RESULT OF trigger_clientB
+ success: False
+message: "Client B just got triggered! :("
 
 from clientA_listener
- data: "1675983704684858083"
+ data: "1683144260379744291"
 
-from clientA_listener
- data: "1675983705680357456"
+SERVICE RESULT OF trigger_clientB
+ success: False
+message: "Client B just got triggered! :("
 ```
 
 On `ClientB` you should see output similar to the following, with new messages arriving at `10Hz`
@@ -137,22 +175,48 @@ On `ClientB` you should see output similar to the following, with new messages a
 from clientA_talker
  seq: 0
 stamp:
-  secs: 1675983707
-  nsecs: 228391408
+  secs: 1683144257
+  nsecs: 434206247
+frame_id: ''
+
+SERVICE RESULT OF trigger_clientA
+ success: True
+message: "Hello from Client A"
+
+SERVICE RESULT OF trigger_clientA
+ success: True
+message: "Hello from Client A"
+
+from clientA_talker
+ seq: 0
+stamp:
+  secs: 1683144258
+  nsecs: 401003360
 frame_id: ''
 
 from clientA_talker
  seq: 0
 stamp:
-  secs: 1675983707
-  nsecs: 333917856
+  secs: 1683144259
+  nsecs: 411408901
+frame_id: ''
+
+SERVICE RESULT OF trigger_clientA
+ success: True
+message: "Hello from Client A"
+
+from clientA_talker
+ seq: 0
+stamp:
+  secs: 1683144260
+  nsecs: 399432420
 frame_id: ''
 
 from clientA_talker
  seq: 0
 stamp:
-  secs: 1675983707
-  nsecs: 430716514
+  secs: 1683144261
+  nsecs: 416639804
 frame_id: ''
 ```
 
@@ -165,4 +229,5 @@ The script for `ClientA` is in [scripts/example_clientA.py](./scripts/example_cl
 -   [x] Allow topic names that begin with forward-slash, ie. "/topic_name"
 -   [x] Support ROS Namespaces (via translation into NATS Subject token)
 -   [x] Support Authenticated NATS Servers
--   [ ] Support Services
+-   [x] Support Services
+-   [ ] Robustly Services and enable `wait_for_service` to work over NATS too.

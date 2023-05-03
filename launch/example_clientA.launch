@@ -10,6 +10,11 @@
                 - clientA_talker
             subscribers:
                 - clientA_listener
+            services:
+                - trigger_clientA
+            service_proxies:
+                - name: trigger_clientB
+                  type: std_srvs/Trigger
         </rosparam>
     </node>
 </launch>

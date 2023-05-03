@@ -2,6 +2,7 @@
 <launch>
     <node name="example_clientB" pkg="nats_ros_connector" type="example_clientB.py" output="screen">
     </node>
+
     <node name="nats_connector" pkg="nats_ros_connector" type="nats_connector.py" output="screen">
         <param name="host" value="nats://host.docker.internal:4222" />
         <rosparam>
@@ -9,6 +10,11 @@
                 - clientA_listener
             subscribers:
                 - clientA_talker
+            services:
+                - trigger_clientB
+            service_proxies:
+                - name: trigger_clientA
+                  type: std_srvs/Trigger
         </rosparam>
     </node>
 </launch>

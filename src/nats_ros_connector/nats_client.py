@@ -3,6 +3,8 @@ import nats
 import rospy
 from nats_ros_connector.nats_publisher import NATSPublisher
 from nats_ros_connector.nats_subscriber import NATSSubscriber
+from nats_ros_connector.nats_service_proxy import NATSServiceProxy
+from nats_ros_connector.nats_service import NATSService
 
 
 class NATSClient:
@@ -11,6 +13,8 @@ class NATSClient:
         nats_host,
         publishers,
         subscribers,
+        services,
+        service_proxies,
         event_loop,
         # NATS Connection parameters
         name=None,
@@ -39,6 +43,8 @@ class NATSClient:
         self.host = nats_host
         self.publishers = publishers
         self.subscribers = subscribers
+        self.services = services
+        self.service_proxies = service_proxies
         self.tasks = []
         self.event_loop = event_loop
 
@@ -104,6 +110,16 @@ class NATSClient:
         # Register Publishers
         for topic_name in self.publishers:
             NATSPublisher(self.nc, topic_name, self.event_loop)
+
+        # Register Services
+        for service_name in self.services:
+            self.event_loop.create_task(NATSService(self.nc, service_name).run())
+
+        # Register Service Proxies
+        for service_dict in self.service_proxies:
+            NATSServiceProxy(
+                self.nc, service_dict["name"], service_dict["type"], self.event_loop
+            )
 
     async def close(self):
         print("NATS Connector: CLOSING CONNECTION")

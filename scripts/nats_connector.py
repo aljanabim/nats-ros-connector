@@ -54,6 +54,8 @@ if __name__ == "__main__":
     # Publisher and Subscriber params
     publishers = load_param("~publishers", [])
     subscribers = load_param("~subscribers", [])
+    services = load_param("~services", [])
+    services_proxies = load_param("~service_proxies", [])
     # Create event loop
     event_loop = asyncio.get_event_loop()
     # NATS Client
@@ -61,6 +63,8 @@ if __name__ == "__main__":
         host,
         publishers,
         subscribers,
+        services,
+        services_proxies,
         event_loop,
         name,
         pedantic,
