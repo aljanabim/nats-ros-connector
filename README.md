@@ -169,7 +169,7 @@ SERVICE RESULT OF trigger_clientB
 message: "Client B just got triggered! :("
 ```
 
-On `ClientB` you should see output similar to the following, with new messages arriving at `10Hz`
+On `ClientB` you should see output similar to the following, with new messages arriving at `.5Hz`
 
 ```
 from clientA_talker
