@@ -14,7 +14,7 @@
                 - trigger_clientA
             service_proxies:
                 - name: trigger_clientB
-                  type: std_srvs/Trigger
+                  type: std_srvs/SetBool
         </rosparam>
     </node>
 </launch>

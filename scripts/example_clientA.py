@@ -1,11 +1,11 @@
 #! /usr/bin/env python3
 import rospy
 from std_msgs.msg import Header, String
-from std_srvs.srv import Trigger
+from std_srvs.srv import Trigger, SetBool
 
 
 def handle_trigger(req):
-    return {"success": True, "message": f"Hello from Client A"}
+    return {"success": True, "message": f"Hello Trigger from Client A"}
 
 
 if __name__ == "__main__":
@@ -28,7 +28,7 @@ if __name__ == "__main__":
     while not rospy.is_shutdown():
         # Call Service
         rospy.wait_for_service("trigger_clientB")
-        service = rospy.ServiceProxy("trigger_clientB", Trigger)
+        service = rospy.ServiceProxy("trigger_clientB", SetBool)
         print(
             "\nSERVICE RESULT OF trigger_clientB\n",
             service(),

@@ -1,11 +1,11 @@
 #! /usr/bin/env python3
 import rospy
 from std_msgs.msg import String, Header
-from std_srvs.srv import Trigger
+from std_srvs.srv import Trigger, SetBool
 
 
-def handle_trigger(req):
-    return {"success": False, "message": f"Client B just got triggered! :("}
+def handle_bool(req):
+    return {"success": False, "message": f"Hello SetBool from Client"}
 
 
 if __name__ == "__main__":
@@ -21,7 +21,7 @@ if __name__ == "__main__":
         callback=lambda msg: print("\nfrom clientA_talker\n", msg),
     )
 
-    rospy.Service("trigger_clientB", Trigger, handle_trigger)
+    rospy.Service("trigger_clientB", SetBool, handle_bool)
     # sleep for 2 seconds to wait for NATS client advertising service to launch
     rospy.sleep(2)
 

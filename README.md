@@ -93,12 +93,12 @@ pip3 install nats-py==2.2.0
 
 ## Examples
 
-The NATS ROS Connector includes an example which demonstrates bi-directional messaging between two clients `ClientA` and `ClientB`. Each client is meant run on separate machine with distinct ROS Cores. With a NATS Server that's accessible to both clients, it's possible to bridge the networking gap between the clients and enable bi-directional communication. The example can scale to as many number of clients and topics as the network bandwidth and the NATS Server can handle. The messaging layout in the example is follows:
+The NATS ROS Connector includes an example which demonstrates bi-directional messaging between two clients `ClientA` and `ClientB`. Each client is meant run on separate machine with distinct ROS Cores. With a NATS Server that's accessible to both clients, it's possible to bridge the networking gap between the clients and enable bi-directional communication. The example can scale to as many number of clients and topics as the network bandwidth and the NATS Server can handle. The messaging and services layout in the example is follows:
 
 -   `ClientA` publishes a topic called `clientA_talker` of msg type `std_msgs/Header` and subscribers to a topic called `clientA_listener` of msg type `std_msgs/String`.
--   `ClientA` advertises a service called `trigger_clientA` and creates a service proxy to `trigger_clientB` both services of service type `std_srvs/Trigger`.
 -   `ClientB` publishes a topic called `clientA_listener` of msg type `std_msgs/Header` and subscribers to a topic called `clientA_listener` of msg type `std_msgs/String`.
--   `ClientB` advertises a service called `trigger_clientB` and creates a service proxy to `trigger_clientA` both services of service type `std_srvs/Trigger`.
+-   `ClientA` advertises a service called `trigger_clientA` of service type `std_srvs/Trigger` and creates a service proxy to `trigger_clientB` of service type `std_srvs/SetBool`.
+-   `ClientB` advertises a service called `trigger_clientB` of service type `std_msgs/SetBool` and creates a service proxy to `trigger_clientA` of service type `std_srvs/Trigger`.
 
 ```mermaid
 graph TB
@@ -143,30 +143,52 @@ On `ClientA` you should see output similar to the following, with new messages a
 ```
 SERVICE RESULT OF trigger_clientB
  success: False
-message: "Client B just got triggered! :("
+message: "Client B just got Bowling!"
 
 SERVICE RESULT OF trigger_clientB
  success: False
-message: "Client B just got triggered! :("
+message: "Client B just got Bowling!"
 
 SERVICE RESULT OF trigger_clientB
  success: False
-message: "Client B just got triggered! :("
+message: "Client B just got Bowling!"
 
 SERVICE RESULT OF trigger_clientB
  success: False
-message: "Client B just got triggered! :("
+message: "Client B just got Bowling!"
 
 SERVICE RESULT OF trigger_clientB
  success: False
-message: "Client B just got triggered! :("
+message: "Client B just got Bowling!"
+
+SERVICE RESULT OF trigger_clientB
+ success: False
+message: "Client B just got Bowling!"
 
 from clientA_listener
- data: "1683144260379744291"
+ data: "1683315536801697492"
 
 SERVICE RESULT OF trigger_clientB
  success: False
-message: "Client B just got triggered! :("
+message: "Client B just got Bowling!"
+
+SERVICE RESULT OF trigger_clientB
+ success: False
+message: "Client B just got Bowling!"
+
+from clientA_listener
+ data: "1683315538801133871"
+
+SERVICE RESULT OF trigger_clientB
+ success: False
+message: "Client B just got Bowling!"
+
+SERVICE RESULT OF trigger_clientB
+ success: False
+message: "Client B just got Bowling!"
+
+from clientA_listener
+ data: "1683315540808658599"
 ```
 
 On `ClientB` you should see output similar to the following, with new messages arriving at `.5Hz`
@@ -175,48 +197,41 @@ On `ClientB` you should see output similar to the following, with new messages a
 from clientA_talker
  seq: 0
 stamp:
-  secs: 1683144257
-  nsecs: 434206247
+  secs: 1683315593
+  nsecs: 274091482
 frame_id: ''
 
 SERVICE RESULT OF trigger_clientA
  success: True
-message: "Hello from Client A"
+message: "Hello Trigger from Client A"
 
 SERVICE RESULT OF trigger_clientA
  success: True
-message: "Hello from Client A"
+message: "Hello Trigger from Client A"
 
 from clientA_talker
  seq: 0
 stamp:
-  secs: 1683144258
-  nsecs: 401003360
+  secs: 1683315594
+  nsecs: 242599487
 frame_id: ''
 
 from clientA_talker
  seq: 0
 stamp:
-  secs: 1683144259
-  nsecs: 411408901
+  secs: 1683315595
+  nsecs: 246570825
 frame_id: ''
 
 SERVICE RESULT OF trigger_clientA
  success: True
-message: "Hello from Client A"
+message: "Hello Trigger from Client A"
 
 from clientA_talker
  seq: 0
 stamp:
-  secs: 1683144260
-  nsecs: 399432420
-frame_id: ''
-
-from clientA_talker
- seq: 0
-stamp:
-  secs: 1683144261
-  nsecs: 416639804
+  secs: 1683315596
+  nsecs: 248357772
 frame_id: ''
 ```
 

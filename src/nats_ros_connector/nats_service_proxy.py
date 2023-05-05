@@ -1,7 +1,6 @@
 import rospy
 import asyncio
 from io import BytesIO
-from std_srvs.srv import Trigger
 import rosservice
 import nats
 from importlib import import_module
@@ -26,7 +25,9 @@ class NATSServiceProxy:
         self.service_class = self.import_service_class()
 
         # Create a service to meet the proxy on the ROS side.
-        self.service = rospy.Service(self.service_name_with_slash, Trigger, self.ros_cb)
+        self.service = rospy.Service(
+            self.service_name_with_slash, self.service_class, self.ros_cb
+        )
         self.service_class = rosservice.get_service_class_by_name(
             self.service_name_with_slash
         )
