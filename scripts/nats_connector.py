@@ -57,7 +57,6 @@ if __name__ == "__main__":
     services = load_param("~services", [])
     services_proxies = load_param("~service_proxies", [])
     srv_req_timeout = load_param("~srv_req_timeout", 1)
-    print("srv_req_timeout: {}".format(srv_req_timeout))
     # Create event loop
     event_loop = asyncio.get_event_loop()
     # NATS Client
