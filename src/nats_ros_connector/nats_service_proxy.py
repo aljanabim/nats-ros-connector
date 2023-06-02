@@ -5,9 +5,8 @@ import rosservice
 import nats
 from importlib import import_module
 
-
 class NATSServiceProxy:
-    def __init__(self, nats_connection, service_name, service_type, event_loop):
+    def __init__(self, nats_connection, service_name, service_type, event_loop, req_timeout):
         self.nc = nats_connection
         self.service_name = (
             service_name[1:] if service_name.startswith("/") else service_name
@@ -23,6 +22,7 @@ class NATSServiceProxy:
         # Get the service type and make a dynamic import
         self.service_type = service_type
         self.service_class = self.import_service_class()
+        self.req_timeout = req_timeout
 
         # Create a service to meet the proxy on the ROS side.
         self.service = rospy.Service(
@@ -56,7 +56,7 @@ class NATSServiceProxy:
         try:
             # Request Service over NATS
             response = await self.nc.request(
-                self.service_name_nats, buff.getvalue(), timeout=1  # 1s timeout
+                self.service_name_nats, buff.getvalue(), timeout=self.req_timeout
             )
             # Deserialize response into the service response class
             self.service_resp_class.deserialize(response.data)
