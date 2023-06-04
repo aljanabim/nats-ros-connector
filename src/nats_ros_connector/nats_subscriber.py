@@ -28,7 +28,7 @@ class NATSSubscriber:
         if Msg is not None:
             # Instantiate a ROS Publisher with the topic class of a ROS Subscriber already registered
             if self.pub is None:
-                self.pub = rospy.Publisher(self.topic_name, Msg, queue_size=1)
+                self.pub = rospy.Publisher(self.topic_name, Msg, queue_size=1, tcp_nodelay=True)
             # Deserialize message and publish
             if self.pub is not None:
                 try:
