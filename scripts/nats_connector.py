@@ -56,6 +56,7 @@ if __name__ == "__main__":
     subscribers = load_param("~subscribers", [])
     services = load_param("~services", [])
     services_proxies = load_param("~service_proxies", [])
+    srv_req_timeout = load_param("~srv_req_timeout", 1)
     # Create event loop
     event_loop = asyncio.get_event_loop()
     # NATS Client
@@ -88,6 +89,7 @@ if __name__ == "__main__":
         user_jwt_cb,
         user_credentials,
         nkeys_seed,
+        srv_req_timeout
     )
     # Start NATS Client
     event_loop.create_task(nats_client.run())

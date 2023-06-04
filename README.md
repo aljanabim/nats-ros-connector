@@ -96,7 +96,7 @@ pip3 install nats-py==2.2.0
 The NATS ROS Connector includes an example which demonstrates bi-directional messaging between two clients `ClientA` and `ClientB`. Each client is meant run on separate machine with distinct ROS Cores. With a NATS Server that's accessible to both clients, it's possible to bridge the networking gap between the clients and enable bi-directional communication. The example can scale to as many number of clients and topics as the network bandwidth and the NATS Server can handle. The messaging and services layout in the example is follows:
 
 -   `ClientA` publishes a topic called `clientA_talker` of msg type `std_msgs/Header` and subscribers to a topic called `clientA_listener` of msg type `std_msgs/String`.
--   `ClientB` publishes a topic called `clientA_listener` of msg type `std_msgs/Header` and subscribers to a topic called `clientA_listener` of msg type `std_msgs/String`.
+-   `ClientB` publishes a topic called `clientA_listener` of msg type `std_msgs/String` and subscribers to a topic called `clientA_talker` of msg type `std_msgs/Header`.
 -   `ClientA` advertises a service called `trigger_clientA` of service type `std_srvs/Trigger` and creates a service proxy to `trigger_clientB` of service type `std_srvs/SetBool`.
 -   `ClientB` advertises a service called `trigger_clientB` of service type `std_msgs/SetBool` and creates a service proxy to `trigger_clientA` of service type `std_srvs/Trigger`.
 

@@ -39,6 +39,7 @@ class NATSClient:
         user_jwt_cb=None,
         user_credentials=None,
         nkeys_seed=None,
+        srv_req_timeout=None
     ):
         self.host = nats_host
         self.publishers = publishers
@@ -71,6 +72,7 @@ class NATSClient:
         self.user_jwt_cb = user_jwt_cb
         self.user_credentials = user_credentials
         self.nkeys_seed = nkeys_seed
+        self.srv_req_timeout = srv_req_timeout
 
     async def run(self):
         self.nc = await nats.connect(
@@ -101,7 +103,7 @@ class NATSClient:
             signature_cb=self.signature_cb,
             user_jwt_cb=self.user_jwt_cb,
             user_credentials=self.user_credentials,
-            nkeys_seed=self.nkeys_seed,
+            nkeys_seed=self.nkeys_seed
         )
         # Register Subscribers
         for topic_name in self.subscribers:
@@ -118,7 +120,7 @@ class NATSClient:
         # Register Service Proxies
         for service_dict in self.service_proxies:
             NATSServiceProxy(
-                self.nc, service_dict["name"], service_dict["type"], self.event_loop
+                self.nc, service_dict["name"], service_dict["type"], self.event_loop, self.srv_req_timeout
             )
 
     async def close(self):
